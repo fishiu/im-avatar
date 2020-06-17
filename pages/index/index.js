@@ -15,6 +15,9 @@ Page({
       url: '../logs/logs'
     })
   },
+  onTap: function() {
+    console.log("tapped");
+  },
   onLoad: function () {
     if (app.globalData.userInfo) {
       this.setData({

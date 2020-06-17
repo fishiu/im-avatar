@@ -1,13 +1,16 @@
 <!--index.wxml-->
 <view class="container">
-  <view class="userinfo">
-    <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
-    <block wx:else>
-      <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-      <text class="userinfo-nickname">{{userInfo.nickName}}</text>
-    </block>
-  </view>
-  <view class="usermotto">
-    <text class="user-motto">{{motto}}</text>
+  <view class="choose-avator-type">
+    <button
+      wx:for="{{['方形边框','圆形边框','角标','挂饰']}}"
+      wx:for-index="typeId"
+      wx:for-item="typeName"
+      class="btn choose-type-btn"
+      type="default"
+      bindtap="onTap"
+    >
+      {{typeName}}
+    </button>
+    <van-button type="primary">按钮</van-button>
   </view>
 </view>
