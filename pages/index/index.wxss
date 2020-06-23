@@ -1,16 +1,24 @@
 /**index.wxss**/
 .container {
-  padding: 0;
+  padding: 20rpx;
 }
 
-.choose-type-btn {
-  display: inline-block;
-  width: 140rpx !important;
-  height: 60rpx;
-  border: 4rpx solid #0084ff;
-  line-height: 40rpx;
-  font-size: 24rpx;
+.scroll-view {
+  width: 100%;
+  white-space: nowrap;
 
-  padding: 10rpx;
-  margin: 10rpx 20rpx !important;
+  margin: 20rpx 0;
+}
+
+.sample-image {
+  margin-right: 20rpx;
+}
+
+.canvas-container {
+  margin: 70rpx 105rpx;
+  padding: 34rpx;
+  border: solid #8B0012 6rpx;
+  border-radius: 30rpx;
+  width: 210px;
+  height: 210px;
 }

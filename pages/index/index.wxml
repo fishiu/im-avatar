@@ -1,16 +1,31 @@
 <!--index.wxml-->
 <view class="container">
-  <view class="choose-avator-type">
-    <button
-      wx:for="{{['方形边框','圆形边框','角标','挂饰']}}"
-      wx:for-index="typeId"
+  <van-tabs active="{{ tabActive }}" bind:change="tabOnChange" color="#8B0012">
+    <van-tab
+      wx:for="{{ ['方形边框','圆形边框','角标','挂饰'] }}"
       wx:for-item="typeName"
-      class="btn choose-type-btn"
-      type="default"
-      bindtap="onTap"
+      name="{{ typeName }}"
+      title="{{ typeName }}"
     >
-      {{typeName}}
-    </button>
-    <van-button type="primary">按钮</van-button>
+      <scroll-view class="scroll-view" scroll-x="true">
+        <van-image
+          wx:for="{{ sampleImages }}"
+          wx:for-item="sampleImage"
+          class="sample-image {{ sampleImage['active']?'active':'' }}"
+          data-sampleid="{{ sampleImage['id'] }}"
+          width="180rpx"
+          height="180rpx"
+          src="{{ sampleImage['path'] }}"
+          bind:tap="chooseSample"
+        />
+      </scroll-view>
+    </van-tab>
+  </van-tabs>
+  <view class="canvas-container">
+    <canvas style="width: 210px; height: 210px;" canvas-id="main-avatar"></canvas>
+  </view>
+  <view class="main-btn-container">
+    <van-button type="default" bind:tap="getAvatar" open-type="getUserInfo">获取头像</van-button>
+    <van-button type="default" bind:tap="saveImage" open-type="getUserInfo">保存图片</van-button>
   </view>
 </view>

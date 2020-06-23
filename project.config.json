@@ -11,6 +11,7 @@
 		"minified": true,
 		"newFeature": true,
 		"coverView": true,
+		"nodeModules": true,
 		"autoAudits": false,
 		"showShadowRootInWxmlPanel": true,
 		"scopeDataCheck": false,
@@ -22,13 +23,14 @@
 			"disablePlugins": [],
 			"outputPath": ""
 		},
+		"useIsolateContext": true,
 		"useCompilerModule": true,
 		"userConfirmedUseCompilerModuleSwitch": false,
-		"nodeModules": true
+		"compileHotReLoad": false
 	},
 	"compileType": "miniprogram",
 	"libVersion": "2.10.2",
-	"appid": "wx5a24b4ae61842e0b",
+	"appid": "wx0a3ae6f4413a4c8d",
 	"projectname": "im-avatar",
 	"debugOptions": {
 		"hidedInDevtools": []

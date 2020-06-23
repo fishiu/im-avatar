@@ -1,57 +1,130 @@
 //index.js
 //获取应用实例
-const app = getApp()
+const app = getApp();
 
 Page({
   data: {
-    motto: 'Hello World',
-    userInfo: {},
-    hasUserInfo: false,
-    canIUse: wx.canIUse('button.open-type.getUserInfo')
+    // 数据区，从服务端拿到的数据
+    picUrl: "/images/preview.png",
+
+    tabActive: "方形边框",
+    sampleImages: [
+      {
+        id: 1,
+        path: "/images/1-1.png",
+        active: true,
+      },
+      {
+        id: 2,
+        path: "/images/1-1.png",
+        active: false,
+      },
+      {
+        id: 3,
+        path: "/images/1-1.png",
+        active: false,
+      },
+      {
+        id: 4,
+        path: "/images/1-1.png",
+        active: false,
+      },
+    ],
+    userAvatarUrl: "",
+    ctx: null,
   },
-  //事件处理函数
-  bindViewTap: function() {
-    wx.navigateTo({
-      url: '../logs/logs'
-    })
+  onLoad: function () {},
+  onReady: function () {
+    this.getAuth();
+    this.drawPrevImage();
   },
-  onTap: function() {
+  // 初始化全局节点信息，最后调用drawing函数
+  drawPrevImage() {
+    const ctx = wx.createCanvasContext("main-avatar");
+    this.setData({ ctx: ctx });
+    ctx.drawImage(this.data.picUrl, 0, 0, 210, 210);
+    ctx.draw();
+  },
+  tabOnChange(event) {
     console.log("tapped");
+    console.log(`tab ${event.detail.name} is tapped`);
   },
-  onLoad: function () {
-    if (app.globalData.userInfo) {
-      this.setData({
-        userInfo: app.globalData.userInfo,
-        hasUserInfo: true
-      })
-    } else if (this.data.canIUse){
-      // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-      // 所以此处加入 callback 以防止这种情况
-      app.userInfoReadyCallback = res => {
-        this.setData({
-          userInfo: res.userInfo,
-          hasUserInfo: true
-        })
-      }
-    } else {
-      // 在没有 open-type=getUserInfo 版本的兼容处理
-      wx.getUserInfo({
-        success: res => {
-          app.globalData.userInfo = res.userInfo
-          this.setData({
-            userInfo: res.userInfo,
-            hasUserInfo: true
-          })
+  chooseSample(event) {
+    console.log(event);
+    console.log(event.currentTarget.dataset["sampleid"]);
+    this.data.ctx.drawImage(this.data.picUrl, 0, 0, 210, 210);
+    this.data.ctx.drawImage(this.data.sampleImages[0].path, 0, 0, 210, 210);
+    this.data.ctx.draw();
+  },
+  getAvatar() {
+    let ctx = this.data.ctx;
+    wx.getUserInfo({
+      success: function (res) {
+        console.log("getAvatar success");
+        var userInfo = res.userInfo;
+        var avatarUrl = userInfo.avatarUrl;
+        avatarUrl = avatarUrl.slice(0, -3) + "0";
+        console.log(avatarUrl);
+        wx.downloadFile({
+          url: avatarUrl,
+          success(downloadRes) {
+            console.log("download url success!");
+            ctx.drawImage(downloadRes.tempFilePath, 0, 0, 210, 210);
+            ctx.draw();
+          },
+        });
+      },
+    });
+  },
+  getAuth() {
+    wx.getSetting({
+      success(res) {
+        console.log("get auth");
+        if (!res.authSetting["scope.userInfo"]) {
+          wx.authorize({
+            scope: "scope.userInfo",
+            success() {
+              console.log("get userinfo success");
+            },
+          });
         }
-      })
-    }
+      },
+    });
   },
-  getUserInfo: function(e) {
-    console.log(e)
-    app.globalData.userInfo = e.detail.userInfo
-    this.setData({
-      userInfo: e.detail.userInfo,
-      hasUserInfo: true
-    })
-  }
-})
+  saveImage() {
+    wx.getSetting({
+      success(res) {
+        if (!res.authSetting["scope.writePhotosAlbum"]) {
+          wx.authorize({
+            scope: "scope.writePhotosAlbum",
+            success() {
+              console.log("授权成功");
+            },
+          });
+        }
+        
+        wx.canvasToTempFilePath({
+          x: 0,
+          y: 0,
+          width: 210,
+          height: 210,
+          canvasId: "main-avatar",
+          success: function (res) {
+            console.log(res.tempFilePath);
+            wx.saveImageToPhotosAlbum({
+              filePath: res.tempFilePath,
+              success: (res) => {
+                wx.showToast({
+                  title: '成功保存至相册！',
+                  icon: 'success',
+                  duration: 1000
+                })
+                console.log("save success!");
+              },
+            });
+          },
+        });
+      },
+    });
+  },
+});
